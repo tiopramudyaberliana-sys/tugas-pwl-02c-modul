@@ -1,51 +1,45 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Mahasiswa</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Daftar Mahasiswa</title>
 </head>
 <body>
+    <h1>Daftar Mahasiswa</h1>
 
-    <div class="container mt-5">
-        <h2 class="mb-4">Daftar Data Mahasiswa</h2>
-        
-        <a href="{{ route('mahasiswa.create') }}" class="btn btn-primary mb-3">Tambah Data</a>
+    @if(session('error'))
+        <div style="color: red; background-color: #fdd; padding: 10px; margin-bottom: 15px; border: 1px solid red;">
+            <strong>{{ session('error') }}</strong>
+        </div>
+    @endif
 
-        <div class="card shadow">
-            <div class="card-body">
-                <table class="table table-bordered table-hover">
-    <thead class="table-dark">
+    <a href="{{ route('mahasiswa.create') }}">Tambah Mahasiswa Baru</a>
+    <br><br>
+
+    <table border="1" cellpadding="10" cellspacing="0">
         <tr>
+            <th>No</th>
             <th>NIM</th>
-            <th>NAMA</th>
-            <th>KELAS</th>
-            <th>MATA KULIAH</th>
-            <th>AKSI</th>
+            <th>Nama Mahasiswa</th>
+            <th>Kelas</th>
+            <th>Aksi</th>
         </tr>
-    </thead>
-
-    <tbody>
-        @forelse ($mahasiswas as $m)
-            <tr>
-                <td>{{ $m->nim }}</td>
-                <td>{{ $m->nama }}</td>
-                <td>{{ $m->kelas }}</td>
-                <td>{{ $m->matakuliah }}</td>
-                <td class="text-center">
-                    <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('mahasiswa.destroy', $m->nim) }}" method="POST">
-                        <a href="{{ route('mahasiswa.edit', $m->nim) }}" class="btn btn-sm btn-primary">EDIT</a>
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">HAPUS</button>
-                    </form>
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="5" class="text-center">Data Mahasiswa belum Tersedia.</td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
+        @foreach($mahasiswas as $index => $mhs)
+        <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $mhs->nim }}</td>
+            <td>{{ $mhs->nama }}</td>
+            <td>{{ $mhs->kelas }}</td>
+            <td>
+                <form action="{{ route('mahasiswa.destroy', $mhs->id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" onclick="return confirm('Yakin mau hapus data ini?')">Hapus</button>
+                </form>
+            </td>
+        </tr>
+        @endforeach
+    </table>
+</body>
+</html>

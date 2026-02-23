@@ -1,52 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Edit Data Mahasiswa</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body style="background: lightgray">
+<h2>Edit Mahasiswa</h2>
 
-    <div class="container mt-5 mb-5">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card border-0 shadow-sm rounded">
-                    <div class="card-body">
-                        <form action="{{ route('mahasiswa.update', $mahasiswa->nim) }}" method="POST">
-                        
-                            @csrf
-                            @method('PUT')
+<form action="/mahasiswa/{{ $mahasiswa->id }}" method="POST">
+@csrf
+@method('PUT')
 
-                            <div class="form-group mb-3">
-                                <label class="font-weight-bold">NIM</label>
-                                <input type="text" class="form-control" name="nim" value="{{ old('nim', $mahasiswa->nim) }}" placeholder="Masukkan NIM Mahasiswa">
-                            </div>
+<input type="text" name="nim" value="{{ $mahasiswa->nim }}"><br>
+<input type="text" name="nama" value="{{ $mahasiswa->nama }}"><br>
+<input type="text" name="kelas" value="{{ $mahasiswa->kelas }}"><br>
 
-                            <div class="form-group mb-3">
-                                <label class="font-weight-bold">NAMA</label>
-                                <input type="text" class="form-control" name="nama" value="{{ old('nama', $mahasiswa->nama) }}" placeholder="Masukkan Nama Lengkap">
-                            </div>
+<select name="matakuliah_id">
+@foreach($matakuliah as $mk)
+<option value="{{ $mk->id }}">
+{{ $mk->nama_mk }}
+</option>
+@endforeach
+</select>
 
-                            <div class="form-group mb-3">
-                                <label class="font-weight-bold">KELAS</label>
-                                <input type="text" class="form-control" name="kelas" value="{{ old('kelas', $mahasiswa->kelas) }}" placeholder="Masukkan Kelas">
-                            </div>
-                            
-                            <div class="form-group mb-3">
-                                <label class="font-weight-bold">MATA KULIAH</label>
-                                <input type="text" class="form-control" name="matakuliah" value="{{ old('matakuliah', $mahasiswa->matakuliah) }}" placeholder="Masukkan Mata Kuliah">
-                            </div>
-
-                            <button type="submit" class="btn btn-md btn-primary">UPDATE</button>
-                            <button type="reset" class="btn btn-md btn-warning">RESET</button>
-
-                        </form> 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+<button type="submit">Update</button>
+</form>

@@ -2,82 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
+use App\Models\Mahasiswa; // <-- TAMBAHKAN BARIS INI
 
 class MahasiswaController extends Controller
 {
-    // 1. INDEX
-    public function index(): View
-    {
-        $mahasiswas = Mahasiswa::all();
-        return view('mahasiswa.index', compact('mahasiswas'));
-    }
+   public function index()
+{
+    // Mengambil semua data dan menyimpannya di variabel $mahasiswas
+    $mahasiswas = Mahasiswa::all(); 
 
-    // 2. CREATE
-    public function create(): View
+    // Mengirim variabel $mahasiswas tersebut ke halaman view
+    return view('mahasiswa.index', compact('mahasiswas')); 
+}
+
+
+    public function create()
     {
         return view('mahasiswa.create');
     }
 
-    // 3. STORE (Bagian ini yang tadi Error, sudah diperbaiki)
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        // Ganti $this->validate jadi $request->validate
-        $request->validate([
-            'nim'     => 'required',
-            'nama'    => 'required',
-            'kelas'   => 'required',
-            'matakuliah' => 'required'
+        DB::table('mahasiswas')->insert([
+            'nama' => $request->nama,
+            'nim' => $request->nim,
+            'kelas' => $request->kelas,
+            'matakuliah_id' => 1
         ]);
 
-        Mahasiswa::create([
-            'nim'     => $request->nim,
-            'nama'    => $request->nama,
-            'kelas'   => $request->kelas,
-            'matakuliah' => $request->matakuliah
-        ]);
-
-        return redirect()->route('mahasiswa.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect('/mahasiswa');
     }
 
-    // 4. EDIT
-    public function edit(string $nim): View
+    public function edit($id)
     {
-        $mahasiswa = Mahasiswa::findOrFail($nim);
+        $mahasiswa = DB::table('mahasiswas')->where('id', $id)->first();
         return view('mahasiswa.edit', compact('mahasiswa'));
     }
 
-    // 5. UPDATE (Ini juga diperbaiki)
-    public function update(Request $request, $nim): RedirectResponse
+    public function update(Request $request, $id)
     {
-        // Ganti $this->validate jadi $request->validate
-        $request->validate([
-            'nim'     => 'required',
-            'nama'    => 'required',
-            'kelas'   => 'required',
-            'matakuliah' => 'required'
+        DB::table('mahasiswas')->where('id', $id)->update([
+            'nama' => $request->nama,
+            'nim' => $request->nim,
+            'kelas' => $request->kelas
         ]);
 
-        $mahasiswa = Mahasiswa::findOrFail($nim);
-
-        $mahasiswa->update([
-            'nim'     => $request->nim,
-            'nama'    => $request->nama,
-            'kelas'   => $request->kelas,
-            'matakuliah' => $request->matakuliah
-        ]);
-
-        return redirect()->route('mahasiswa.index')->with(['success' => 'Data Berhasil Diubah!']);
+        return redirect('/mahasiswa');
     }
-    
-    // 6. DESTROY
-    public function destroy($nim): RedirectResponse
+
+    public function destroy($id)
     {
-        $mahasiswa = Mahasiswa::findOrFail($nim);
-        $mahasiswa->delete();
-        return redirect()->route('mahasiswa.index')->with(['success' => 'Data Berhasil Dihapus!']);
+        DB::table('mahasiswas')->where('id', $id)->delete();
+        return redirect('/mahasiswa');
     }
 }
